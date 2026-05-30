@@ -9,6 +9,7 @@ from pyrogram.types import (
     InlineKeyboardMarkup,
     Message,
 )
+from pyrogram.errors import SessionPasswordNeeded
 
 import Config
 from VCFIGHTERS.logging import LOGGER
@@ -165,7 +166,7 @@ async def cb_mode(client: Client, query: CallbackQuery):
                     callback_data="cfg_mode_dm",
                 ),
             ],
-            [InlineKeyboardButton("˹ ◀️ 𝐁ᴀᴄᴋ ˼", callback_data="config_main")],
+            [InlineKeyboardButton("˹ ��️ 𝐁ᴀᴄᴋ ˼", callback_data="config_main")],
         ]),
     )
 
@@ -224,7 +225,7 @@ async def cb_auto_on(client: Client, query: CallbackQuery):
     await save_settings({"mode": "auto"})
     await query.answer("✅ 𝚫ᴜᴛᴏ ϻᴏᴅє ᴏη!", show_alert=False)
     await query.edit_message_text(
-        "✅ **𝚫ᴜᴛᴏ ϻᴏᴅє ᴀᴄᴛιᴠє!**\n\n"
+        "✅ **𝚫ᴜᴛᴏ ϻᴏᴅє ᴀᴄᴛɪᴠє!**\n\n"
         "🎙️ ᴀʙ ᴊᴀʙ ᴛᴜ ᴠᴄ ϻєιη ϻιᴄ ᴏη ᴋᴀʀєɢᴀ →\n"
         "ᴜsєʀʙᴏᴛ ᴀᴜᴛᴏ ʀєᴄᴏʀᴅ ᴋʀєɢᴀ ᴀᴜʀ ʟᴏᴏρ ᴄʜᴀʟᴀʏєɢᴀ.\n\n"
         "💡 ρнʟє **ʀєᴀᴅʏ** ᴅʙᴀᴏ ᴛᴀᴋι ᴜsєʀʙᴏᴛ ᴠᴄ ϻєιη ʙєᴛнє.",
@@ -750,8 +751,28 @@ async def conversation_handler(client: Client, message: Message):
             await tmp.stop()
             clear_state(uid)
             await _save_manual_session(client, message, session, uid)
+        except SessionPasswordNeeded:
+            # 2FA password required
+            set_state(uid, "await_2fa_password", phone=phone, tmp=tmp)
+            await message.reply(
+                f"🔐 **2-Step Verification Password Required**\n\n"
+                f"Apna 2FA password bhejo:"
+            )
         except Exception as e:
             await message.reply(f"❌ OTP ɢʟᴀᴛ нᴀι: `{e}`\nᴅᴏʙᴀʀᴀ ʙнєᴊᴏ:")
+
+    # ── 2FA Password ─────────────────────────────────────────
+    elif step == "await_2fa_password":
+        password = message.text.strip()
+        tmp = state.get("tmp")
+        try:
+            await tmp.check_password(password)
+            session = await tmp.export_session_string()
+            await tmp.stop()
+            clear_state(uid)
+            await _save_manual_session(client, message, session, uid)
+        except Exception as e:
+            await message.reply(f"❌ Password glat hai: `{e}`\n\nPhir se bhejo:")
 
     # ── Manual session ───────────────────────────────────────
     elif step == "await_session_string":
