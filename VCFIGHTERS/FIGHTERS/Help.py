@@ -5,9 +5,10 @@ from pyrogram.types import (
     InlineKeyboardMarkup,
     Message,
 )
+from pyrogram.enums import ParseMode
 
 from VCFIGHTERS.core.bot import app
-from VCFIGHTERS.FIGHTERS.sudo import is_authorized
+from VCFIGHTERS.FIGHTERS.Settings import is_authorized
 
 # ──────────────────────────────────────────────────────────────
 # HELP CONTENT
@@ -15,51 +16,50 @@ from VCFIGHTERS.FIGHTERS.sudo import is_authorized
 
 _SECTIONS = {
     "vc": (
-        "🎙️ **ᴠᴄ ᴄᴏϻϻᴀηᴅs**\n\n"
-        "`/stop` — ᴠᴄ ʙᴀηᴅ ᴋᴀʀᴏ & ʟєᴀᴠє\n"
-        "`/pause` — ᴀᴜᴅιᴏ ρᴀᴜsє ᴋᴀʀᴏ\n"
-        "`/resume` — ᴀᴜᴅιᴏ ᴡᴀᴘᴀs ᴄʜᴀʟᴀᴏ\n"
-        "`/vcstatus` — ᴄᴜʀʀєηᴛ ᴠᴄ sᴛᴀᴛᴜs ᴅєᴋʜᴏ"
+        "🎙️ **VC COMMANDS**\n\n"
+        "`/stop` — Stop VC & Leave\n"
+        "`/pause` — Pause Audio\n"
+        "`/resume` — Resume Audio\n"
+        "`/vcstatus` — Current VC Status"
     ),
     "config": (
-        "⚙️ **ᴄᴏηғιɢ ᴄᴏϻϻᴀηᴅs**\n\n"
-        "`/config` — ϻᴀιη ᴄᴏηғιɢ ρᴀηєʟ ᴋʜᴏʟᴏ\n\n"
-        "**ρᴀηєʟ ϻєηᴜ:**\n"
-        "˹ 𝐋ᴏɢɢєʀ ˼ — ʟᴏɢ ɢʀᴏᴜρ sєᴛ ᴋᴀʀᴏ\n"
-        "˹ 𝐅𝐅ϻρєɢ ˼ — ᴀᴜᴅιᴏ ᴡєᴀρᴏη ᴄᴏηᴛʀᴏʟs\n"
-        "˹ 𝐌ᴏᴅє ˼ — ᴀᴜᴛᴏ ʏᴀ ᴅᴍ ϻᴏᴅє\n"
-        "˹ 𝐔sєʀ𝐁ᴏᴛs ˼ — ᴜsєʀʙᴏᴛ ᴀᴅᴅ/ᴅєʟ\n"
-        "˹ 𝐓ᴀʀɢєᴛ ˼ — ᴛᴀʀɢєᴛ ɢʀᴏᴜρ sєᴛ ᴋᴀʀᴏ\n"
-        "˹ ρʏᴛɢ𝐂ᴀʟʟs ˼ — sᴛʀєᴀᴍ ϙᴜᴀʟιᴛʏ\n"
-        "˹ ριηɢs ˼ — sʏsᴛєϻ ριηɢs ᴄʜєᴄᴋ"
+        "⚙️ **CONFIG COMMANDS**\n\n"
+        "`/config` — Main Config Panel\n\n"
+        "**Panel Menu:**\n"
+        "˹ 𝐋ᴏɢɢєʀ ˼ — Set Log Group\n"
+        "˹ 𝐅𝐅ϻρєɢ ˼ — Audio Weapon Controls\n"
+        "˹ 𝐌ᴏᴅє ˼ — Auto or DM Mode\n"
+        "˹ 𝐔sєʀ𝐁ᴏᴛs ˼ — Add/Remove Userbots\n"
+        "˹ 𝐓ᴀʀɢєᴛ ˼ — Set Target Group\n"
+        "˹ ριηɢs ˼ — System Pings Check"
     ),
     "modes": (
-        "🎮 **ϻᴏᴅєs**\n\n"
-        "🟢 **ᴀᴜᴛᴏ ϻᴏᴅє**\n"
-        "ᴏᴡηєʀ/sᴜᴅᴏ ᴊᴀʙ ᴠᴄ ϻєιη ϻιᴄ ᴏη ᴋᴀʀє →\n"
-        "ᴜsєʀʙᴏᴛ ᴀᴜᴛᴏ ʀєᴄᴏʀᴅ ᴋᴀʀɴᴀ sʜᴜʀᴜ\n"
-        "ϻιᴄ ʙᴀηᴅ ᴋᴀʀᴏ → ʀєᴄᴏʀᴅιηɢ ʟᴏᴏρ ϻєιη ᴄʜᴀʟє\n\n"
-        "🔵 **ᴅᴍ ϻᴏᴅє**\n"
-        "ʙᴏᴛ ᴋᴇ ᴅᴍ ϻєιη ᴠᴏιᴄє ηᴏᴛє ʙʜєᴊᴏ →\n"
-        "ᴜsєʀʙᴏᴛ ᴛᴀʀɢєᴛ ᴠᴄ ϻєιη ʟᴏᴏρ ᴄʜᴀʟᴀʏє\n"
-        "ηʏᴀ ᴠᴏιᴄє ηᴏᴛє ʙʜєᴊᴏ → ρᴜʀᴀηᴀ ʀᴜᴋє, ηʏᴀ ᴄʜᴀʟє"
+        "🎮 **MODES**\n\n"
+        "🟢 **AUTO MODE**\n"
+        "Owner/Sudo turns mic ON in VC →\n"
+        "Userbot auto starts recording\n"
+        "Turn OFF mic → Recording loops\n\n"
+        "🔵 **DM MODE**\n"
+        "Send voice note to bot DM →\n"
+        "Userbot loops in target VC\n"
+        "Send new voice note → Old removed, new plays"
     ),
     "ffmpeg": (
-        "🛠️ **𝐅𝐅ϻρєɢ ᴡєᴀρᴏηs**\n\n"
-        "🔊 **ᴠᴏʟᴜϻє** — 100% sє MAX 💥 ᴛᴀᴋ\n"
-        "🎛️ **ᴄᴏϻρʀєssᴏʀ** — ᴅʜєᴇᴍι ᴀᴀᴡᴀᴢ ʙᴏᴏsᴛ\n"
-        "🔒 **ʟιϻιᴛєʀ** — ғᴀᴛι ᴀᴀᴡᴀᴢ ᴄᴏηᴛʀᴏʟ\n"
-        "🎸 **ʙᴀss** — ηᴏʀϻᴀʟ → нєᴀᴠʏ → 🌍 єᴀʀᴛнϙᴜᴀᴋє\n"
-        "👹 **ριᴛᴄн** — ηᴏʀϻᴀʟ → ᴅєϻᴏη → 🐹 ᴄʜιρϻᴜηᴋ\n"
-        "🦇 **єᴄʜᴏ** — ɢʜᴏsᴛ ρʀᴏᴛᴏᴄᴏʟ ʀєᴠєʀʙ\n\n"
-        "💀 **ɢᴀᴀηᴅ ғᴀᴀᴅ ϻᴏᴅє** = sᴀʙ ᴍᴀx ᴇᴋ sᴀᴀᴛʜ"
+        "🛠️ **FFMPEG WEAPONS**\n\n"
+        "🔊 **VOLUME** — 100% to MAX 💥\n"
+        "🎛️ **COMPRESSOR** — Boost Low Sound\n"
+        "🔒 **LIMITER** — Control Loud Sound\n"
+        "🎸 **BASS** — Normal → Heavy → 🌍 Earthquake\n"
+        "👹 **PITCH** — Normal → Demon → 🐹 Chipmunk\n"
+        "🦇 **ECHO** — Ghost Protocol Reverb\n\n"
+        "💀 **FULL POWER MODE** = All MAX Together"
     ),
     "sudo": (
-        "👑 **sᴜᴅᴏ sʏsᴛєϻ**\n\n"
-        "`/addsudo` — ʀєρʟʏ ᴋᴀʀᴏ ʏᴀ ιᴅ ᴅᴏ → sᴜᴅᴏ ᴀᴅᴅ\n"
-        "`/delsudo` — sᴜᴅᴏ ʀєϻᴏᴠє ᴋᴀʀᴏ\n"
-        "`/sudolist` — sᴀʙ sᴜᴅᴏ ᴜsєʀs ᴅєᴋʜᴏ\n\n"
-        "⚠️ sιʀғ **ᴏᴡηєʀ** нι sᴜᴅᴏ ᴀᴅᴅ/ᴅєʟ ᴋᴀʀ sᴋᴛᴀ нᴀι"
+        "👑 **SUDO SYSTEM**\n\n"
+        "`/addsudo` — Reply or give ID → Add Sudo\n"
+        "`/delsudo` — Remove Sudo\n"
+        "`/sudolist` — List All Sudos\n\n"
+        "⚠️ Only **OWNER** can add/remove sudos"
     ),
 }
 
@@ -70,25 +70,25 @@ _SECTIONS = {
 def _main_help_kb() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([
         [
-            InlineKeyboardButton("˹ 🎙️ ᴠᴄ ᴄᴍᴅs ˼",    callback_data="hlp_vc"),
-            InlineKeyboardButton("˹ ⚙️ ᴄᴏηғιɢ ˼",      callback_data="hlp_config"),
+            InlineKeyboardButton("˹ 🎙️ VC CMDS ˼",    callback_data="hlp_vc"),
+            InlineKeyboardButton("˹ ⚙️ CONFIG ˼",      callback_data="hlp_config"),
         ],
         [
-            InlineKeyboardButton("˹ 🎮 ϻᴏᴅєs ˼",       callback_data="hlp_modes"),
-            InlineKeyboardButton("˹ 🛠️ 𝐅𝐅ϻρєɢ ˼",      callback_data="hlp_ffmpeg"),
+            InlineKeyboardButton("˹ 🎮 MODES ˼",       callback_data="hlp_modes"),
+            InlineKeyboardButton("˹ 🛠️ FFMPEG ˼",      callback_data="hlp_ffmpeg"),
         ],
         [
-            InlineKeyboardButton("˹ 👑 sᴜᴅᴏ ˼",        callback_data="hlp_sudo"),
+            InlineKeyboardButton("˹ 👑 SUDO ˼",        callback_data="hlp_sudo"),
         ],
         [
-            InlineKeyboardButton("˹ ❌ ᴄʟᴏsє ˼",       callback_data="hlp_close"),
+            InlineKeyboardButton("˹ ❌ CLOSE ˼",       callback_data="hlp_close"),
         ],
     ])
 
 
 def _back_kb() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton("˹ ◀️ 𝐁ᴀᴄᴋ ˼", callback_data="hlp_main")]
+        [InlineKeyboardButton("˹ ◀️ BACK ˼", callback_data="hlp_main")]
     ])
 
 
@@ -99,10 +99,12 @@ def _back_kb() -> InlineKeyboardMarkup:
 @app.on_message(pyro_filters.command("help") & pyro_filters.private)
 async def cmd_help(client, message: Message):
     if not await is_authorized(message.from_user.id):
+        await message.reply("⛔ Access Denied - Owner/Sudo Only")
         return
     await message.reply(
-        "⚔️ **ᴠᴄғιɢнᴛєʀ ʜєʟρ**\n\nᴋᴀᴜηsᴀ sєᴄᴛιᴏη ᴄʜᴀʜιᴇ?",
+        "⚔️ **VCFIGHTER HELP**\n\nSelect a section:",
         reply_markup=_main_help_kb(),
+        parse_mode=ParseMode.MARKDOWN,
     )
 
 
@@ -113,11 +115,12 @@ async def cmd_help(client, message: Message):
 @app.on_callback_query(pyro_filters.regex("^hlp_main$"))
 async def cb_hlp_main(client, query: CallbackQuery):
     if not await is_authorized(query.from_user.id):
-        await query.answer("⛔ 𝚫ᴄᴄєss ᴅєηιєᴅ", show_alert=True)
+        await query.answer("⛔ Access Denied", show_alert=True)
         return
     await query.edit_message_text(
-        "⚔️ **ᴠᴄғιɢнᴛєʀ ʜєʟρ**\n\nᴋᴀᴜηsᴀ sєᴄᴛιᴏη ᴄʜᴀʜιᴇ?",
+        "⚔️ **VCFIGHTER HELP**\n\nSelect a section:",
         reply_markup=_main_help_kb(),
+        parse_mode=ParseMode.MARKDOWN,
     )
     await query.answer()
 
@@ -125,11 +128,15 @@ async def cb_hlp_main(client, query: CallbackQuery):
 @app.on_callback_query(pyro_filters.regex("^hlp_(vc|config|modes|ffmpeg|sudo)$"))
 async def cb_hlp_section(client, query: CallbackQuery):
     if not await is_authorized(query.from_user.id):
-        await query.answer("⛔ 𝚫ᴄᴄєss ᴅєηιєᴅ", show_alert=True)
+        await query.answer("⛔ Access Denied", show_alert=True)
         return
     key  = query.data.split("_")[1]
-    text = _SECTIONS.get(key, "ηᴏᴛ ғᴏᴜηᴅ.")
-    await query.edit_message_text(text, reply_markup=_back_kb())
+    text = _SECTIONS.get(key, "Not found.")
+    await query.edit_message_text(
+        text,
+        reply_markup=_back_kb(),
+        parse_mode=ParseMode.MARKDOWN,
+    )
     await query.answer()
 
 
@@ -139,4 +146,3 @@ async def cb_hlp_close(client, query: CallbackQuery):
         await query.message.delete()
     except Exception:
         pass
-
