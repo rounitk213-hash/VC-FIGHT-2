@@ -117,12 +117,12 @@ async def cb_hlp_main(client, query: CallbackQuery):
     if not await is_authorized(query.from_user.id):
         await query.answer("⛔ Access Denied", show_alert=True)
         return
+    await query.answer()
     await query.edit_message_text(
         "⚔️ **VCFIGHTER HELP**\n\nSelect a section:",
         reply_markup=_main_help_kb(),
         parse_mode=ParseMode.MARKDOWN,
     )
-    await query.answer()
 
 
 @app.on_callback_query(pyro_filters.regex("^hlp_(vc|config|modes|ffmpeg|sudo)$"))
@@ -132,16 +132,17 @@ async def cb_hlp_section(client, query: CallbackQuery):
         return
     key  = query.data.split("_")[1]
     text = _SECTIONS.get(key, "Not found.")
+    await query.answer()
     await query.edit_message_text(
         text,
         reply_markup=_back_kb(),
         parse_mode=ParseMode.MARKDOWN,
     )
-    await query.answer()
 
 
 @app.on_callback_query(pyro_filters.regex("^hlp_close$"))
 async def cb_hlp_close(client, query: CallbackQuery):
+    await query.answer()
     try:
         await query.message.delete()
     except Exception:
