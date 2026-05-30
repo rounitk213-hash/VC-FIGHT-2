@@ -5,7 +5,7 @@ import time
 import aiohttp
 import psutil
 from pyrogram import filters as pyro_filters
-from pyrogram.types import Message
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
 import Config
 from VCFIGHTERS.core.bot import app
@@ -74,21 +74,38 @@ def _api_btn(
 
 
 # ══════════════════════════════════════════════════════════════
-# RAW BOT API
+# CONVERT MARKUP TO PYROGRAM KEYBOARD
 # ══════════════════════════════════════════════════════════════
 
 
-async def _raw_api(method: str, payload: dict) -> dict:
-
-    url = f"https://api.telegram.org/bot{Config.BOT_TOKEN}/{method}"
-
-    async with aiohttp.ClientSession() as session:
-        async with session.post(url, json=payload) as response:
-            return await response.json()
+def _markup_to_keyboard(markup: list) -> InlineKeyboardMarkup:
+    """Convert raw button markup to Pyrogram InlineKeyboardMarkup"""
+    buttons = []
+    for row in markup:
+        button_row = []
+        for btn in row:
+            if btn.get("url"):
+                button_row.append(
+                    InlineKeyboardButton(
+                        text=btn["text"],
+                        url=btn["url"]
+                    )
+                )
+            elif btn.get("callback_data"):
+                button_row.append(
+                    InlineKeyboardButton(
+                        text=btn["text"],
+                        callback_data=btn["callback_data"]
+                    )
+                )
+        if button_row:
+            buttons.append(button_row)
+    
+    return InlineKeyboardMarkup(buttons)
 
 
 # ══════════════════════════════════════════════════════════════
-# SEND PHOTO
+# SEND PHOTO WITH PYROGRAM
 # ══════════════════════════════════════════════════════════════
 
 
@@ -101,45 +118,39 @@ async def _send_magic(
     effect_id: str = None,
 ) -> int | None:
 
-    payload = {
-        "chat_id": chat_id,
-        "photo": photo_url,
-        "caption": caption,
-        "parse_mode": "HTML",
-    }
-
-    if reply_to:
-        payload["reply_to_message_id"] = reply_to
-
-    if effect_id:
-        payload["message_effect_id"] = effect_id
-
-    res = await _raw_api("sendPhoto", payload)
-
-    if not res.get("ok"):
-        log.error(f"sendPhoto failed: {res.get('description')}")
+    try:
+        # Convert markup to Pyrogram keyboard
+        keyboard = _markup_to_keyboard(markup)
+        
+        # Send photo using Pyrogram
+        message = await app.send_photo(
+            chat_id=chat_id,
+            photo=photo_url,
+            caption=caption,
+            parse_mode="html",
+            reply_to_message_id=reply_to,
+            reply_markup=keyboard,
+        )
+        
+        return message.id
+        
+    except Exception as e:
+        log.error(f"Send photo failed: {e}")
         return None
 
-    msg_id = res["result"]["message_id"]
 
-    kb_res = await _raw_api(
-        "editMessageReplyMarkup",
-        {
-            "chat_id": chat_id,
-            "message_id": msg_id,
-            "reply_markup": {
-                "inline_keyboard": markup
-            },
-        },
-    )
+# ══════════════════════════════════════════════════════════════
+# RAW BOT API (for reactions only)
+# ══════════════════════════════════════════════════════════════
 
-    if not kb_res.get("ok"):
-        log.warning(
-            f"editMessageReplyMarkup failed: "
-            f"{kb_res.get('description')}"
-        )
 
-    return msg_id
+async def _raw_api(method: str, payload: dict) -> dict:
+
+    url = f"https://api.telegram.org/bot{Config.BOT_TOKEN}/{method}"
+
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, json=payload) as response:
+            return await response.json()
 
 
 # ══════════════════════════════════════════════════════════════
@@ -492,20 +503,13 @@ async def on_bot_added(client, message: Message):
 
         panel = await _group_panel()
 
+        # Convert markup to keyboard
+        keyboard = _markup_to_keyboard(panel)
+
         run = await message.reply_text(
             f"😎 <b>Hello {message.chat.title}!</b>\n"
-            f"💖 Thanks for adding me!"
-        )
-
-        await _raw_api(
-            "editMessageReplyMarkup",
-            {
-                "chat_id": message.chat.id,
-                "message_id": run.id,
-                "reply_markup": {
-                    "inline_keyboard": panel
-                },
-            },
+            f"💖 Thanks for adding me!",
+            reply_markup=keyboard,
         )
 
         async def _auto_del():
