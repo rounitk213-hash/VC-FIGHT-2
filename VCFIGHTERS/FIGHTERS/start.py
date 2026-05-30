@@ -57,7 +57,6 @@ def _api_btn(
     text: str,
     callback_data: str = None,
     url: str = None,
-    style: str = None,
 ) -> dict:
 
     btn = {"text": text}
@@ -70,9 +69,6 @@ def _api_btn(
             url = f"https://t.me/{url.replace('@', '')}"
 
         btn["url"] = url
-
-    if style in ("primary", "danger", "success"):
-        btn["style"] = style
 
     return btn
 
@@ -174,38 +170,32 @@ async def _private_panel() -> list:
             _api_btn(
                 "˹ Support ˼",
                 url=support_url,
-                style="danger",
             ),
             _api_btn(
                 "˹ Updates ˼",
                 url=support_url,
-                style="primary",
             ),
         ],
         [
             _api_btn(
                 "˹ Config ˼",
                 callback_data="vc_config",
-                style="primary",
             ),
             _api_btn(
                 "˹ Help ˼",
                 callback_data="vc_help",
-                style="success",
             ),
         ],
         [
             _api_btn(
                 "˹ Source Code ˼",
                 url=source_url,
-                style="primary",
             ),
         ],
         [
             _api_btn(
                 "˹ My Master ˼",
                 url=f"tg://user?id={owner_id}",
-                style="danger",
             ),
         ],
     ]
@@ -226,19 +216,16 @@ async def _group_panel() -> list:
             _api_btn(
                 "˹ Support ˼",
                 url=support_url,
-                style="danger",
             ),
             _api_btn(
                 "˹ Config ˼",
                 url=f"https://t.me/{me.username}?start=config",
-                style="primary",
             ),
         ],
         [
             _api_btn(
                 "˹ DM Me ˼",
                 url=f"https://t.me/{me.username}",
-                style="success",
             ),
         ],
     ]
