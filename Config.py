@@ -125,8 +125,8 @@ STARTUP_SESSIONS: list[str] = [
 
 BOT_NAME    = _get("BOT_NAME",    default="VCFighter")
 BOT_VERSION = _get("BOT_VERSION", default="2.0")
-SUPPORT_URL = _get("SUPPORT_URL", default="https://t.me/Zcziiy")
-SOURCE_URL  = _get("SOURCE_URL",  default="https://github.com/YOURNAME/VCFIGHTER")
+SUPPORT_URL = _get("SUPPORT_URL", default="https://t.me/+WzyoJkg4bzhlNTFl")
+SOURCE_URL  = _get("SOURCE_URL",  default="https://t.me/+WzyoJkg4bzhlNTFl")
 
 # ══════════════════════════════════════════════════════════════
 #  DERIVED / CONSTANTS
@@ -155,8 +155,8 @@ BASS_LEVELS = {
 #  OPTIONAL — Support & Community Links
 # ══════════════════════════════════════════════════════════════
 
-SUPPORT_CHAT    = _get("SUPPORT_CHAT",    default="https://t.me/Zcziiy")       # Support group link
-SUPPORT_CHANNEL = _get("SUPPORT_CHANNEL", default="https://t.me/Zcziiy")       # Updates channel link
+SUPPORT_CHAT    = _get("SUPPORT_CHAT",    default="https://t.me/+WzyoJkg4bzhlNTFl")       # Support group link
+SUPPORT_CHANNEL = _get("SUPPORT_CHANNEL", default="https://t.me/+WzyoJkg4bzhlNTFl")       # Updates channel link
 
 # ══════════════════════════════════════════════════════════════
 #  OPTIONAL — Bot Pictures (used in /start, /help etc)
