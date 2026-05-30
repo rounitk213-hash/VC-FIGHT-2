@@ -6,6 +6,7 @@ import aiohttp
 import psutil
 from pyrogram import filters as pyro_filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.enums import ParseMode
 
 import Config
 from VCFIGHTERS.core.bot import app
@@ -122,12 +123,12 @@ async def _send_magic(
         # Convert markup to Pyrogram keyboard
         keyboard = _markup_to_keyboard(markup)
         
-        # Send photo using Pyrogram
+        # Send photo using Pyrogram with HTML parse mode
         message = await app.send_photo(
             chat_id=chat_id,
             photo=photo_url,
             caption=caption,
-            parse_mode="html",
+            parse_mode=ParseMode.HTML,
             reply_to_message_id=reply_to,
             reply_markup=keyboard,
         )
