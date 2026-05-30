@@ -765,14 +765,34 @@ async def conversation_handler(client: Client, message: Message):
     elif step == "await_2fa_password":
         password = message.text.strip()
         tmp = state.get("tmp")
+        phone = state.get("phone")
         try:
-            await tmp.check_password(password)
-            session = await tmp.export_session_string()
-            await tmp.stop()
+            # Check if client is still connected
+            if tmp and tmp.is_connected:
+                await tmp.check_password(password)
+                session = await tmp.export_session_string()
+                await tmp.stop()
+            else:
+                # Reconnect if needed
+                from pyrogram import Client as PyroClient
+                tmp = PyroClient(
+                    "tmp_2fa_retry",
+                    api_id=Config.API_ID,
+                    api_hash=Config.API_HASH,
+                    phone_number=phone,
+                    in_memory=True,
+                )
+                await tmp.connect()
+                await tmp.check_password(password)
+                session = await tmp.export_session_string()
+                await tmp.stop()
+            
             clear_state(uid)
             await _save_manual_session(client, message, session, uid)
         except Exception as e:
+            log.error(f"2FA Password Error: {e}")
             await message.reply(f"❌ Password glat hai: `{e}`\n\nPhir se bhejo:")
+
 
     # ── Manual session ───────────────────────────────────────
     elif step == "await_session_string":
